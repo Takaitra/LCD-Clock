@@ -44,8 +44,8 @@ main (void)
 {
   // init time
   t.year = 2009;
-  t.month = 10;
-  t.date = 14;
+  t.month = 11;
+  t.date = 29;
   t.hour = 22;
   t.minute = 58;
   t.second = 30;
