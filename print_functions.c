@@ -36,9 +36,6 @@ const char menuStrings[4][15] PROGMEM = {
 	{ "    Return"   },
 };
 
-xypos dateOrigin = { 0, 0 };    // Start position for date display
-xypos timeOrigin = { 4, 1 };    // Start position for time display
-
 char buffer[7];
 
 char *digit_string(uint16_t digits)
@@ -60,7 +57,12 @@ char *digit_string(uint16_t digits)
 
 void print_date(time t)
 {
-	lcd_gotoxy(dateOrigin.x, dateOrigin.y);
+	print_date_xy(t, dateOrigin.x, dateOrigin.y);
+}
+
+void print_date_xy(time t, uint8_t x, uint8_t y)
+{
+	lcd_gotoxy(x, y);
 	lcd_puts_p(dayStrings[get_day_of_week(t)]);
 	lcd_putc(' ');
 	lcd_puts_p(monthStrings[t.month - 1]);
@@ -72,12 +74,24 @@ void print_date(time t)
 
 void print_time(time t)
 {
-	lcd_gotoxy(timeOrigin.x, timeOrigin.y);
+	print_time_xy(t, timeOrigin.x, timeOrigin.y);
+}
+
+void print_time_xy(time t, uint8_t x, uint8_t y)
+{
+	lcd_gotoxy(x, y);
 	lcd_puts(digit_string(t.hour));
 	lcd_putc(':');
 	lcd_puts(digit_string(t.minute));
 	lcd_putc(':');
 	lcd_puts(digit_string(t.second));
+}
+
+void print_blank(uint8_t x, uint8_t y, uint8_t len)
+{
+	lcd_gotoxy(x, y);
+	for (; len>0; len--)
+		lcd_putc(' ');
 }
 
 void print_hour(time t)
@@ -86,34 +100,34 @@ void print_hour(time t)
 	lcd_puts(digit_string(t.hour));
 }
 
-void print_blank_hour()
-{
-	lcd_gotoxy(timeOrigin.x, timeOrigin.y);
-	lcd_puts("  ");
-}
-
 void print_minute(time t)
 {
-	lcd_gotoxy(timeOrigin.x + 3, timeOrigin.y);
+	lcd_gotoxy(timeOrigin.x + MINUTE_X_OFFSET, timeOrigin.y);
 	lcd_puts(digit_string(t.minute));
-}
-
-void print_blank_minute()
-{
-	lcd_gotoxy(timeOrigin.x + 3, timeOrigin.y);
-	lcd_puts("  ");
 }
 
 void print_second(time t)
 {
-	lcd_gotoxy(timeOrigin.x + 6, timeOrigin.y);
+	lcd_gotoxy(timeOrigin.x + SECOND_X_OFFSET, timeOrigin.y);
 	lcd_puts(digit_string(t.second));
 }
 
-void print_blank_second()
+void print_month(time t)
 {
-	lcd_gotoxy(timeOrigin.x + 6, timeOrigin.y);
-	lcd_puts("  ");
+	lcd_gotoxy(dateOrigin.x + MONTH_X_OFFSET, dateOrigin.y + 1);
+	lcd_puts_p(monthStrings[t.month - 1]);
+}
+
+void print_day(time t)
+{
+	lcd_gotoxy(dateOrigin.x + DAY_X_OFFSET, dateOrigin.y + 1);
+	lcd_puts(digit_string(t.date));
+}
+
+void print_year(time t)
+{
+	lcd_gotoxy(dateOrigin.x + YEAR_X_OFFSET, dateOrigin.y + 1);
+	lcd_puts(digit_string(t.year));
 }
 
 void print_menu(uint8_t menu)
@@ -145,6 +159,14 @@ void print_set_time(time tempTime)
 	lcd_gotoxy(1, 0);
 	lcd_puts_p(menuStrings[SET_TIME - 1]);
 	print_time(tempTime);
+}
+
+void print_set_date(time tempTime)
+{
+	lcd_clrscr();
+	lcd_gotoxy(1, 0);
+	lcd_puts_p(menuStrings[SET_TIME - 1]);
+	print_date_xy(tempTime, 0, 1);
 }
 
 void print_set_alarm1(time tempTime)

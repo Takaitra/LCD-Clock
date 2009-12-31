@@ -1,8 +1,8 @@
 /**
  * File:         main.c
- * Version:      0.2
+ * Version:      0.3
  * Date Created: 11/01/2009
- * Last Updated: 12/27/2009
+ * Last Updated: 12/29/2009
  * Author:       Matthew Toso
  *
  * Copyright 2009 Matthew Toso
@@ -140,6 +140,25 @@ ISR(PCINT2_vect)
 					tempTime.second = 59;
 				print_second(tempTime);
 				break;
+			case MONTH_ITEM:
+				if (--tempTime.month < 1)
+					tempTime.date = 12;
+				sanitize_date(&tempTime);
+				print_date_xy(tempTime, 0, 1);
+				break;
+			case DAY_ITEM:
+				if (--tempTime.date < 1)
+					if (tempTime.month == 2 && is_leap_year(tempTime.year))
+						tempTime.date = 29;
+					else
+						tempTime.date = &daysInMonth[tempTime.month];
+				print_date_xy(tempTime, 0, 1);
+				break;
+			case YEAR_ITEM:
+				if (tempTime.year > 2007)
+					--tempTime.year;
+				print_date_xy(tempTime, 0, 1);
+				break;
 			}
 		}
 		else{
@@ -158,17 +177,27 @@ ISR(PCINT2_vect)
 			{
 			case SET_TIME:
 				if (setTime) {
-					if (menuItem == SECONDS_ITEM) {
+					switch (menuItem)
+					{
+					case HOUR_ITEM:
+					case MINUTE_ITEM:
+						menuItem++;
+						print_set_time(tempTime);
+						break;
+					case SECONDS_ITEM:
+					case MONTH_ITEM:
+					case DAY_ITEM:
+						menuItem++;
+						print_set_date(tempTime);
+						break;
+					case YEAR_ITEM:
 						t = tempTime;
 						setTime = false;
 						print_menu(menu);
-					}
-					else{
-						menuItem++;
-						print_set_time(tempTime);
+						break;
 					}
 				}
-				else{
+				else {
 					setTime = true;
 					tempTime = t;
 					menuItem = HOUR_ITEM;
@@ -228,6 +257,20 @@ ISR(PCINT2_vect)
 					tempTime.second = 0;
 				print_second(tempTime);
 				break;
+			case MONTH_ITEM:
+				if (++tempTime.month > 12)
+					tempTime.month = 1;
+				sanitize_date(&tempTime);
+				print_date_xy(tempTime, 0, 1);
+				break;
+			case DAY_ITEM:
+				increment_date(&tempTime, false);
+				print_date_xy(tempTime, 0, 1);
+				break;
+			case YEAR_ITEM:
+				tempTime.year++;
+				print_date_xy(tempTime, 0, 1);
+				break;
 			}
 		}
 		else{
@@ -254,13 +297,22 @@ ISR(TIMER0_COMPB_vect)
 			switch (menuItem)
 			{
 			case HOUR_ITEM:
-				print_blank_hour();
+				print_blank(timeOrigin.x, timeOrigin.y, 2);
 				break;
 			case MINUTE_ITEM:
-				print_blank_minute();
+				print_blank(timeOrigin.x + MINUTE_X_OFFSET, timeOrigin.y, 2);
 				break;
 			case SECONDS_ITEM:
-				print_blank_second();
+				print_blank(timeOrigin.x + SECOND_X_OFFSET, timeOrigin.y, 2);
+				break;
+			case MONTH_ITEM:
+				print_blank(dateOrigin.x + MONTH_X_OFFSET, 1, 2);
+				break;
+			case DAY_ITEM:
+				print_blank(dateOrigin.x + DAY_X_OFFSET, 1, 2);
+				break;
+			case YEAR_ITEM:
+				print_blank(dateOrigin.x + YEAR_X_OFFSET, 1, 2);
 				break;
 			}
 		}
@@ -277,6 +329,15 @@ ISR(TIMER0_COMPB_vect)
 				break;
 			case SECONDS_ITEM:
 				print_second(tempTime);
+				break;
+			case MONTH_ITEM:
+				print_month(tempTime);
+				break;
+			case DAY_ITEM:
+				print_day(tempTime);
+				break;
+			case YEAR_ITEM:
+				print_year(tempTime);
 				break;
 			}
 		}
@@ -309,33 +370,7 @@ ISR(TIMER2_OVF_vect)
 			t.minute = 0;
 			if (++t.hour == 24) {
 				t.hour = 0;
-				if (++t.date == 32) {
-					t.month++;
-					t.date = 1;
-				}
-				else if (t.date == 31) {
-					if ((t.month == 4) || (t.month == 6) || (t.month == 9)
-					    || (t.month == 11)) {
-						t.month++;
-						t.date = 1;
-					}
-				}
-				else if (t.date == 30) {
-					if (t.month == 2) {
-						t.month++;
-						t.date = 1;
-					}
-				}
-				else if (t.date == 29) {
-					if ((t.month == 2) && (!is_leap_year(t.year))) {
-						t.month++;
-						t.date = 1;
-					}
-				}
-				if (t.month == 13) {
-					t.month = 1;
-					t.year++;
-				}
+				increment_date(&t, true);
 				if (!setup)
 					print_date(t);
 			}

@@ -1,5 +1,6 @@
 #include <inttypes.h>
 #include <stdbool.h>
+#include <avr/pgmspace.h>
 
 #ifndef RTC_COMMON_H
 #define RTC_COMMON_H
@@ -12,9 +13,9 @@
 #define cbi(var, mask)   ((var) &= (uint8_t) ~(1 << mask))
 
 #define SET_TIME 1
-#define SET_ALARM1 2
-#define SET_ALARM2 3
-#define SET_RETURN 4
+#define SET_ALARM1 3
+#define SET_ALARM2 4
+#define SET_RETURN 5
 
 #define HOUR_ITEM 1
 #define MINUTE_ITEM 2
@@ -23,6 +24,13 @@
 #define DAY_ITEM 5
 #define YEAR_ITEM 6
 #define RETURN_ITEM 7
+
+#define MINUTE_X_OFFSET 3
+#define SECOND_X_OFFSET 6
+
+#define MONTH_X_OFFSET 4
+#define DAY_X_OFFSET 8
+#define YEAR_X_OFFSET 12
 
 #define BUTTON1 PD2
 #define BUTTON2 PD1
@@ -49,8 +57,20 @@ typedef struct {
 
 bool is_leap_year(uint16_t year);
 uint8_t get_day_of_week(time t);
+void increment_date(time *t, bool carryover);
+void sanitize_date(time *t);
 
 extern time t;
 extern time alarmTime;
+
+/**
+ * monthMods are used as part of the day of week calculation and are stored
+ * in ROM
+*/
+extern const uint8_t monthMods[13] PROGMEM =
+{ 0, 0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5 };
+
+extern const uint8_t daysInMonth[12] PROGMEM =
+{ 31, 28, 31, 30, 30, 30, 31, 31, 30, 31, 30, 31 };
 
 #endif

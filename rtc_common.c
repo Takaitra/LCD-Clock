@@ -2,12 +2,47 @@
 #include <inttypes.h>
 #include <avr/pgmspace.h>
 
-/**
- * monthMods are used as part of the day of week calculation and are stored
- * in ROM
-*/
-const uint8_t monthMods[13] PROGMEM =
-{ 0, 0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5 };
+void increment_date(time *t, bool carryover)
+{
+	if (++t->date == 32) {
+		t->date = 1;
+		if (carryover)
+			t->month++;
+	}
+	else if (t->date == 31) {
+		if ((t->month == 4) || (t->month == 6) || (t->month == 9)
+			|| (t->month == 11)) {
+			t->date = 1;
+			if (carryover)
+				t->month++;
+		}
+	}
+	else if (t->date == 30) {
+		if (t->month == 2) {
+			t->date = 1;
+			if (carryover)
+				t->month++;
+		}
+	}
+	else if (t->date == 29) {
+		if ((t->month == 2) && (!is_leap_year(t->year))) {
+			t->date = 1;
+			if (carryover)
+				t->month++;
+		}
+	}
+	if (t->month == 13) {
+		t->month = 1;
+		t->year++;
+	}
+}
+
+void sanitize_date(time *t)
+{
+	while (t->date > &daysInMonth[t->month]) {
+		t->date--;
+	}
+}
 
 /****************************************************************
  * GetDayofWeek
