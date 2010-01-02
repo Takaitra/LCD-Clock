@@ -55,6 +55,15 @@ uint8_t blinkCounter;
 uint8_t debounceCounter;
 uint16_t alarmCounter;
 
+xypos dateOrigin = { 0, 0 };    // Start position for date display
+xypos timeOrigin = { 4, 1 };    // Start position for time display
+
+const uint8_t monthMods[13] PROGMEM =
+{ 0, 0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5 };
+
+const uint8_t daysInMonth[12] PROGMEM =
+{ 31, 28, 31, 30, 30, 30, 31, 31, 30, 31, 30, 31 };
+
 int main(void)
 {
 	// init time

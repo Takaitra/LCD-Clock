@@ -20,7 +20,4 @@ void print_arrows(uint8_t row);
 void print_set_time(time tempTime);
 void print_set_alarm1(time tempTime);
 
-extern xypos dateOrigin = { 0, 0 };    // Start position for date display
-extern xypos timeOrigin = { 4, 1 };    // Start position for time display
-
 #endif

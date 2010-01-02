@@ -63,14 +63,15 @@ void sanitize_date(time *t);
 extern time t;
 extern time alarmTime;
 
+extern xypos dateOrigin;    // Start position for date display
+extern xypos timeOrigin;    // Start position for time display
+
 /**
  * monthMods are used as part of the day of week calculation and are stored
  * in ROM
 */
-extern const uint8_t monthMods[13] PROGMEM =
-{ 0, 0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5 };
+extern const uint8_t monthMods[13] PROGMEM;
 
-extern const uint8_t daysInMonth[12] PROGMEM =
-{ 31, 28, 31, 30, 30, 30, 31, 31, 30, 31, 30, 31 };
+extern const uint8_t daysInMonth[12] PROGMEM;
 
 #endif
