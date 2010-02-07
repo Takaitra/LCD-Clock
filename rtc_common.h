@@ -13,9 +13,9 @@
 #define cbi(var, mask)   ((var) &= (uint8_t) ~(1 << mask))
 
 #define SET_TIME 1
-#define SET_ALARM1 3
-#define SET_ALARM2 4
-#define SET_RETURN 5
+#define SET_ALARM1 2
+#define SET_ALARM2 3
+#define SET_RETURN 3
 
 #define HOUR_ITEM 1
 #define MINUTE_ITEM 2
@@ -38,7 +38,7 @@
 
 #define BLINK_DELAY 100
 #define ALARM_INTERVAL 100
-#define DEBOUNCE_DELAY 10
+#define DEBOUNCE_DELAY 45
 
 typedef struct {
         int8_t second;

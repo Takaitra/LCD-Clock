@@ -315,13 +315,13 @@ ISR(TIMER0_COMPB_vect)
 				print_blank(timeOrigin.x + SECOND_X_OFFSET, timeOrigin.y, 2);
 				break;
 			case MONTH_ITEM:
-				print_blank(dateOrigin.x + MONTH_X_OFFSET, 1, 2);
+				print_blank(dateOrigin.x + MONTH_X_OFFSET, 1, 3);
 				break;
 			case DAY_ITEM:
 				print_blank(dateOrigin.x + DAY_X_OFFSET, 1, 2);
 				break;
 			case YEAR_ITEM:
-				print_blank(dateOrigin.x + YEAR_X_OFFSET, 1, 2);
+				print_blank(dateOrigin.x + YEAR_X_OFFSET, 1, 4);
 				break;
 			}
 		}

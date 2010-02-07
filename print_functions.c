@@ -29,10 +29,10 @@ const char dayStrings[7][4] PROGMEM = {
 	{ "Sat" },
 };
 
-const char menuStrings[4][15] PROGMEM = {
+const char menuStrings[3][15] PROGMEM = {
 	{ "   Set Time"  },
-	{ "  Set Alarm1" },
-	{ "  Set Alarm2" },
+	{ "  Set Alarm" },
+	//{ "  Set Alarm2" },
 	{ "    Return"   },
 };
 
@@ -145,9 +145,9 @@ void print_menu(uint8_t menu)
 	case SET_ALARM1:
 		print_time(alarmTime);
 		break;
-	case SET_ALARM2:
-		print_time(alarmTime);
-		break;
+	//case SET_ALARM2:
+	//	print_time(alarmTime);
+	//	break;
 	case SET_RETURN:
 		break;
 	}
