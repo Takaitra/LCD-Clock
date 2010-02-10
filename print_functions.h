@@ -19,5 +19,7 @@ void print_menu(uint8_t menu);
 void print_arrows(uint8_t row);
 void print_set_time(time tempTime);
 void print_set_alarm1(time tempTime);
+void enable_blink(xypos pos, uint8_t len);
+void disable_blink(void);
 
 #endif

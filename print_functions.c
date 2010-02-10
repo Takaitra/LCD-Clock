@@ -184,3 +184,14 @@ void print_arrows(uint8_t row)
 	lcd_gotoxy(15, row);
 	lcd_data(0x7E);         // -->
 }
+
+void enable_blink(xypos pos, uint8_t len)
+{
+	lcd_gotoxy(pos.x, pos.y);
+
+}
+
+void disable_blink(void)
+{
+
+}

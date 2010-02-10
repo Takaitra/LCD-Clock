@@ -66,6 +66,8 @@ extern time alarmTime;
 extern xypos dateOrigin;    // Start position for date display
 extern xypos timeOrigin;    // Start position for time display
 
+extern char* blinkBuffer;
+
 /**
  * monthMods are used as part of the day of week calculation and are stored
  * in ROM

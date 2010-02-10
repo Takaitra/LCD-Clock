@@ -88,4 +88,3 @@ bool is_leap_year(uint16_t year)    // Check for leap year
 	else
 		return false;
 }
-
